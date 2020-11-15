@@ -7,17 +7,18 @@ dat = dat(chanMap+1,:);
 figure; imagesc(dat(:,:));
 
 %% subset of that data:
-
-dat_sub = dat(1:30,30000:120000);
+%1-3 seconds
+%channels %30:60
+dat_sub = dat(30:60,30000:150000);
 
 imagesc(dat_sub);
-figure();
-for i = 17: 17
-    hold on
-    %plot(dat_sub(i,:));
-    %x = conv(dat_sub(i,:),ones(1,10));
-    %plot(x);
-end
+% figure();
+% for i = 17: 17
+%     hold on
+%     %plot(dat_sub(i,:));
+%     %x = conv(dat_sub(i,:),ones(1,10));
+%     %plot(x);
+% end
 
 %% apply bandpass filter
 FS2 = 30000;
@@ -43,11 +44,37 @@ y = y(D+1:end,:)';
 imagesc(y); 
 %% look at specific channels
 
-for i = 9:9
-    hold on
+for i = 23:23
     %plot(dat_sub(i,:));
     %x = conv(dat_sub(i,:),ones(1,10));
     plot(y(i,:));
+    
     %plot(y_ht(i,:));
 end
 %imagesc(y)
+%% subset that is interesting
+x = y(20:30,:);
+ imagesc(x);
+ 
+X = x;
+ X =  X./(0.8*max(X(:)));
+ 
+plot(1:size(X,2), bsxfun(@plus, X, (0:(size(X,1)-1))')');
+ 
+%% do some pre processiong
+t = (X<0);
+X(t) = 0;
+for i = 3:6
+    %plot(dat_sub(i,:));
+    %x = conv(dat_sub(i,:),ones(1,10));
+    plot(x(i,:));
+    hold on;
+    
+    %plot(y_ht(i,:));
+end
+
+
+t = (x<10);
+x_ht = x;
+x_ht(t)=0;
+imagesc(x_ht)
