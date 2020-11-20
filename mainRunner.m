@@ -1,4 +1,5 @@
-%% run this after getting X;
+%% Readme: basics
+% import Y to matlab before running this:
 % visualize everything
 
 %X = y(42:60,74000:85000)
@@ -6,8 +7,9 @@ X = y(70:110,50000+33000:86500);
 %X = y(70:110,13500:16500); % shows pretty good sequences
 X_ht =  X./(0.8*max(X(:)));    % normalizes
  
-X_ht = movmedian(X_ht',5)';%smoothing
-figure();imagesc(X_ht);
+%X_ht = movmedian(X_ht',100)';%smoothing USE WDNOISE
+ %X_ht = wdenoise(X_ht',2,'DenoisingMethod','BlockJS','Wavelet','sym4')';
+figure();
 plot(1:size(X_ht,2), bsxfun(@plus, X_ht, (0:(size(X_ht,1)-1))')');
 
 %% export to seqNMF try to make signal all positive:
@@ -17,14 +19,16 @@ X_ht(t) = abs(X_ht(t));
 X = X_ht;
 
 %% apply seqnmf:
-K = 4;
+K = 10;
 L = 20;%6000; %50 % length of timebins for each factor
 lambda =0;%.005;%0.005;
-lambdal1H = .005;
+lambdal1H = .5;
 lambdaorthoW = 0;%.0005;
+lOH = .02;
+lW1 = .02;
 shg; clf
 display('Running seqNMF on simulated data (2 simulated sequences + noise)')
-[W,H] = seqNMF(X,'K',K, 'L', L,'lambda', lambda,'lambdaL1H',lambdal1H,'lambdaOrthoW',lambdaorthoW);
+[W,H] = seqNMF(X,'K',K, 'L', L,'lambda', lambda,'lambdaL1H',lambdal1H,'lambdaL1W',lW1,'lambdaOrthoW',lambdaorthoW,'lambdaOrthoH',lOH);
 
 %% Look at factors
 figure; SimpleWHPlot(W,H); title('SeqNMF reconstruction')
