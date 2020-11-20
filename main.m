@@ -7,9 +7,9 @@ dat = dat(chanMap+1,:);
 figure; imagesc(dat(:,:));
 
 %% subset of that data:
-%1-3 seconds
-%channels %30:60
-dat_sub = dat(30:60,30000:150000);
+%1-10 seconds
+%channels first 200;
+dat_sub = dat(1:200,30000:300000);
 
 imagesc(dat_sub);
 % figure();
@@ -53,10 +53,14 @@ for i = 23:23
 end
 %imagesc(y)
 %% subset that is interesting
-x = y(20:30,:);
+x = y(10:20,:);
+x = movmedian(x',10)';
  imagesc(x);
  
 X = x;
+
+%% 
+
  X =  X./(0.8*max(X(:)));
  
 plot(1:size(X,2), bsxfun(@plus, X, (0:(size(X,1)-1))')');
@@ -64,6 +68,11 @@ plot(1:size(X,2), bsxfun(@plus, X, (0:(size(X,1)-1))')');
 %% do some pre processiong
 t = (X<0);
 X(t) = 0;
+plot(1:size(X,2), bsxfun(@plus, X, (0:(size(X,1)-1))')')
+
+
+%%
+
 for i = 3:6
     %plot(dat_sub(i,:));
     %x = conv(dat_sub(i,:),ones(1,10));
@@ -78,3 +87,4 @@ t = (x<10);
 x_ht = x;
 x_ht(t)=0;
 imagesc(x_ht)
+ 
