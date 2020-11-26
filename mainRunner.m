@@ -22,17 +22,25 @@ X = X_ht;
 K = 10;
 L = 20;%6000; %50 % length of timebins for each factor
 lambda =0;%.005;%0.005;
-lambdal1H = .5;
-lambdaorthoW = 0;%.0005;
-lOH = .02;
-lW1 = .02;
+lambdal1H = .8; % L1H just scales the HH
+lambdaorthoW = 0;%.0002;%.0005; %how orthogonal the W's have to be
+lOH = .08; % lambda ortho 
+lW1 = .01; % scales the lambda of W
 shg; clf
 display('Running seqNMF on simulated data (2 simulated sequences + noise)')
-[W,H] = seqNMF(X,'K',K, 'L', L,'lambda', lambda,'lambdaL1H',lambdal1H,'lambdaL1W',lW1,'lambdaOrthoW',lambdaorthoW,'lambdaOrthoH',lOH);
+[W,H] = seqNMFVD(X,'K',K, 'L', L,'lambda', lambda,'lambdaL1H',lambdal1H,'lambdaL1W',lW1,'lambdaOrthoW',lambdaorthoW,'lambdaOrthoH',lOH);
+
 
 %% Look at factors
 figure; SimpleWHPlot(W,H); title('SeqNMF reconstruction')
 figure; SimpleWHPlot(W,H,X); title('SeqNMF factors, with raw data')
+
+%% look at raw output:
+figure();
+plot(1:size(X,2), bsxfun(@plus, X, (abs((0:(size(X,1)-1))-(size(X,1)-1))')));
+title('Our Data');
+xlabel('Time');
+ylabel('Electrodes');
 %% look at the wave form of specific W's:
 w1 = squeeze(W(:,6,:));
 figure();
@@ -41,11 +49,11 @@ plot(1:size(w1,2), bsxfun(@plus, w1, (0:(size(w1,1)-1))')');
 tic
 Ws = {};
 Hs = {};
-numfits = 3; %number of fits to compare
+numfits = 7; %number of fits to compare
 for k = 1:10
     display(sprintf('running seqNMF with K = %i',k))
     for ii = 1:numfits
-        [Ws{ii,k},Hs{ii,k}] = seqNMF(X,'K',k, 'L', L,'lambda', 0,'maxiter',30,'showplot',0); 
+        [Ws{ii,k},Hs{ii,k}] = seqNMF(X,'K',k, 'L', L,'lambda', 0,'showplot',0); 
         % note that max iter set low (30iter) for speed in demo (not recommended in practice)
     end
     inds = nchoosek(1:numfits,2);

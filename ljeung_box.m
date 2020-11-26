@@ -1,5 +1,5 @@
 % Calculate the residual matrix and run Ljeung-Box Test on it
-function decisions = ljeung_box(W, H)
+function decisions = ljeung_box(W, H,X)
     % subtract found templates and times from X:
     X_hat = helper.reconstruct(W,H);
     res = X - X_hat;
