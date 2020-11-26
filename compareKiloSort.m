@@ -22,25 +22,77 @@ end
 
 x = linspace(113000,116500, 3501)';
 % check each of the 3500 frames to see if there is a spike there
-y = zeros(length(x), 1);
+kilosorted = zeros(length(x), 1);
 for frame = 1 : length(x) %3500
     for spike = 1 : size(all3, 1) %744
         if x(frame) == all3(spike,1)
             % if so, set to 1
-            y(frame,1) = 1;
+            kilosorted(frame,1) = 1;
         else
             continue
         end
     end
 end
-
+both = [kilosorted, Voutput'];
 %% Plot figure
 load('vOutput.mat')
 
 subplot(2,1,1)
-plot(1:3501, y)
-title("KiloSort Spikes")
+plot(1:3501, kilosorted)
+title("KiloSorted Spikes")
 
 subplot(2,1,2)
 plot(1:3501, Voutput)
-title("Vedant's Spikes")
+title("Our Spikes")
+
+%% Plot all of the kilosort spikes that have a 'Voutput' spike and vise-versa
+% Determine when 2 spikes are the "same" (occur within t frames of each other) and look at % agreement and % disagreement
+
+% 'intersect' is all of the 'kilosorted' spikes that have a 'Voutput' spike
+width = 5; % how many neighbors to consider on each side
+intersect = zeros(3501,1); % how many 1s in 'kilosorted' have a corresponding 1 in 'Voutput' at similar time
+non_intersect = zeros(3501,1); % how many 1s in 'kilosorted' DONT have a corresponding 1 in 'Voutput' at similar time
+for i = width+1 : length(kilosorted)-width
+    % for each spike in kilosort
+    if kilosorted(i) == 1
+        % was there any spikes in 'Voutput' within t seconds of it?
+        if any( Voutput(i-width:i+width) )
+            intersect(i) = 1;
+        else
+            % count as a kilosort spike that DOES NOT have a 'Voutput' spike
+            non_intersect(i) = 1;
+        end
+    end
+
+end
+
+% 'intersect2' is all of the 'Voutput' spikes that have a 'kilosorted' spike
+intersect2 = zeros(3501,1); % how many 1s in 'Voutput' have a corresponding 1 in 'kilosorted' at similar time
+non_intersect2 = zeros(3501,1); % how many 1s in 'Voutput' DONT have a corresponding 1 in 'kilosorted' at similar time
+for i = width+1 : length(Voutput)-width
+    % for each spike in kilosort
+    if Voutput(i) == 1
+        % was there any spikes in 'Voutput' within t seconds of it?
+        if any( kilosorted(i-width:i+width) )
+            intersect2(i) = 1;
+        else
+            % count as a kilosort spike that DOES NOT have a 'Voutput' spike
+            non_intersect2(i) = 1;
+        end
+    end
+
+end
+
+subplot(2,1,1)
+hold on
+plot(intersect, 'blue')
+plot(non_intersect, 'red')
+hold off
+title('Kilosort')
+
+subplot(2,1,2)
+hold on
+plot(intersect2, 'blue')
+plot(non_intersect2, 'red')
+hold off
+title('Voutput')
