@@ -9,6 +9,7 @@ X_ht =  X./(0.8*max(X(:)));    % normalizes
  
 %X_ht = movmedian(X_ht',100)';%smoothing USE WDNOISE
  %X_ht = wdenoise(X_ht',2,'DenoisingMethod','BlockJS','Wavelet','sym4')';
+%%
 figure();
 plot(1:size(X_ht,2), bsxfun(@plus, X_ht, (0:(size(X_ht,1)-1))')');
 
@@ -37,7 +38,7 @@ figure; SimpleWHPlot(W,H,X); title('SeqNMF factors, with raw data')
 
 %% look at raw output:
 figure();
-plot(1:size(X,2), bsxfun(@plus, X, (abs((0:(size(X,1)-1))-(size(X,1)-1))')));
+plot(1:size(X_ht,2), bsxfun(@plus, X_ht, (abs((0:(size(X_ht)-1))-(size(X_ht,1)-1))')));
 title('Our Data');
 xlabel('Time');
 ylabel('Electrodes');

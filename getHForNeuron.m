@@ -11,11 +11,11 @@ for i = 1:size(H,1)
     
 end
 %% plot the H's
-% figure();
-% plot(1:size(Hlocs,2), bsxfun(@plus, Hlocs, (abs((0:(size(Hlocs,1)-1))-(size(Hlocs,1)-1))')));
-% title('Time Series of Spikes for different Neurons');
-% ylabel('Neuron');
-% xlabel('Time');
+figure();
+plot(1:size(Hlocs,2), bsxfun(@plus, Hlocs, (abs((0:(size(Hlocs,1)-1))-(size(Hlocs,1)-1))')));
+title('Time Series of Spikes for different Neurons');
+ylabel('Neuron');
+xlabel('Time');
 
 end
 

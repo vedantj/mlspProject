@@ -34,6 +34,11 @@ end
 figure; SimpleWHPlot(W,H); title('SeqNMF reconstruction')
 figure; SimpleWHPlot(W,H,X); title('SeqNMF factors, with raw data')
 
+%% plot main H's
+figure();
+box off;
+plot(1:size(H,2), bsxfun(@plus, H, (abs((0:(size(H,1)-1))-(size(H,1)-1))')));
+
 %% get H's
 Hlocs = getHForNeuron(H,W);
 X_hat = helper.reconstruct(W,Hlocs);

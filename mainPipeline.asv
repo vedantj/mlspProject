@@ -34,6 +34,8 @@ end
 figure; SimpleWHPlot(W,H); title('SeqNMF reconstruction')
 figure; SimpleWHPlot(W,H,X); title('SeqNMF factors, with raw data')
 
+%% plot 
+
 %% get H's
 Hlocs = getHForNeuron(H,W);
 X_hat = helper.reconstruct(W,Hlocs);
@@ -48,7 +50,7 @@ figure();
 plot(Hlocs');
 ylim([0 1.5]);
 colSum = sum(Hlocs);
-colSum(colSum > 0) = 1
+colSum(colSum > 0) = 1;
 
 %% find distance
 
