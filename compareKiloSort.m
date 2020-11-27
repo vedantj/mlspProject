@@ -1,6 +1,11 @@
 % Compare spikesorted spiketimes to our spiketimes
-myKsDir = "../Kilosort_Output/"; % output files from OneDrive
+myKsDir = "Kilosort_Output/"; % output files from OneDrive
+load('VedantFiles/vOutput.mat')
+
+addpath(genpath("/Users/johnduva/Desktop/2020/Git/Project/spikes"))
+% addpath(genpath("/Users/johnduva/Desktop/2020/Git/Project/npy-matlab"))
 [~, ~, ~, spikeSites] = ksDriftmap(myKsDir); % this function lives in 'spikes'
+
 spikeTimes = readNPY('spike_times.npy'); % requires npy-matlab 
 all = [spikeTimes, spikeSites];
 
@@ -35,8 +40,6 @@ for frame = 1 : length(x) %3500
 end
 both = [kilosorted, Voutput'];
 %% Plot figure
-load('vOutput.mat')
-
 subplot(2,1,1)
 plot(1:3501, kilosorted)
 title("KiloSorted Spikes")
@@ -89,10 +92,48 @@ plot(intersect, 'blue')
 plot(non_intersect, 'red')
 hold off
 title('Kilosort')
+legend("KiloSorted spikes that have a convNMF spike","KiloSorted spikes that DON'T have a convNMF spike" )
 
 subplot(2,1,2)
 hold on
 plot(intersect2, 'blue')
 plot(non_intersect2, 'red')
 hold off
-title('Voutput')
+title('convNMF')
+legend("ConvNMF spikes that have a KiloSorted spike","ConvNMF spikes that DON'T have a KiloSorted spike" )
+
+%% Compare our Ws with spikesorted templates
+load('VedantFiles/W.mat')
+templates = readNPY('Kilosort_Output/templates.npy'); 
+% templatesIDX = readNPY('Kilosort_Output/templates_ind.npy'); 
+% templatesSpikes = readNPY('Kilosort_Output/spike_templates.npy'); 
+% spikeClusters = readNPY('Kilosort_Output/spike_clusters.npy');
+
+% only take the channels we care about
+templates2 = templates(:,:,70:110);
+W2 = permute(W, [3 2 1]);
+%         W is (channels x length x K)
+% templates is (neurons  x  time  x channels)
+
+%% Look for the max correlation between any corresponding electrodes
+corrs = zeros(41,1);
+for i = 1 : 41
+    A = W2(:,:,i);
+    B = templates(:,:,i);
+    B2 = imresize(B,size(A));
+    corrs(i) = corr2(A,B2);
+end
+
+
+
+%% another option is to measure the difference using the earth-mover's distance
+
+
+
+
+
+
+
+
+%% might be a little harder to parse, but can also compute spike rates and compare via L2 norms etc
+
