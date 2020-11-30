@@ -124,7 +124,7 @@ for i = width+1 : length(Voutput)-width
 
 end
 
-
+% 'intersect3' is all of the Clustering spikes that have a 'kilosorted' spike
 intersect3 = zeros(3501,1); 
 non_intersect3 = zeros(3501,1); 
 for i = width+1 : length(L_pred)-width
@@ -144,52 +144,61 @@ end
 
 
 %% Plot kilsorted against clustering
-
-% 'intersect' is all of the 'kilosorted' spikes that have a 'Voutput' spike
+% 'intersect4' is all of the 'kilosorted' spikes that have a Clustering spike
 figure(1)
-subplot(2,1,1)
+subplot(2,2,1)
 hold on
 plot(intersect4, 'blue')
 plot(non_intersect4, 'red')
 hold off
-title('Kilosort')
+title('Kilosort vs Clustering')
 lgd = legend("KiloSorted spikes with corresponding Clustering spike","KiloSorted spikes without Clustering spike" );
 lgd.FontSize = 12;
 
-% 'intersect3' is all of the 'L_pred' spikes that have a 'kilosorted' spike
-subplot(2,1,2)
+% 'intersect3' is all of the Clustering spikes that have a 'kilosorted' spike
+subplot(2,2,3)
 hold on
 plot(intersect3, 'blue')
 plot(non_intersect3, 'red')
 hold off
-title('Clustering Algorithm')
+title('Clustering vs Kilosort')
 lgd2 = legend("Clustering spikes with corresponding KiloSorted spike","Clustering spikes without a KiloSorted spike" );
 lgd2.FontSize = 12;
 
-%% Plot kilsorted against convNMF
+% Plot kilsorted against convNMF
 % 'intersect' is all of the 'kilosorted' spikes that have a 'Voutput' spike
-figure(2)
-subplot(2,1,1)
+subplot(2,2,2)
 hold on
 plot(intersect, 'blue')
 plot(non_intersect, 'red')
 hold off
-title('Kilosort')
+title('Kilosort vs convNMF')
 lgd = legend("KiloSorted spikes with corresponding convNMF spike","KiloSorted spikes without convNMF spike" );
 lgd.FontSize = 12;
 
 % 'intersect2' is all of the 'Voutput' spikes that have a 'kilosorted' spike
-subplot(2,1,2)
+subplot(2,2,4)
 hold on
 plot(intersect2, 'blue')
 plot(non_intersect2, 'red')
 hold off
-title('convNMF')
+title('convNMF vs Kilosort')
 lgd2 = legend("ConvNMF spikes with corresponding KiloSorted spike","ConvNMF spikes without a KiloSorted spike" );
 lgd2.FontSize = 12;
 
 
-%Calulate agreement
-% sum(intersect) / (sum(intersect)+sum(non_intersect))
-% sum(intersect2) / (sum(intersect2)+sum(non_intersect2))
+%% Calulate percent agreement 
+top_left = sum(intersect4) / (sum(intersect4)+sum(non_intersect4)); %23/36
+bot_left = sum(intersect3) / (sum(intersect3)+sum(non_intersect3)); %39/80
+top_right = sum(intersect) / (sum(intersect)+sum(non_intersect)); %24/36
+bot_right = sum(intersect2) / (sum(intersect2)+sum(non_intersect2));
+
+disp(top_left);
+disp(bot_left);
+disp(top_right);
+disp(bot_right);
+
+sum(L_pred)
+sum(kilosorted)
+sum(Voutput)
 
